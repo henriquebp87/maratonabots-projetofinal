@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Routing;
 
-namespace MaratonaBots_Bot
+namespace MaratonaBots_BotApp
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

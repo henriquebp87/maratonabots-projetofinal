@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
-namespace MaratonaBots_Bot
+namespace MaratonaBots_BotApp
 {
     public static class WebApiConfig
     {

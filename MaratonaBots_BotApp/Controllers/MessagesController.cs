@@ -1,11 +1,13 @@
-﻿using System.Net;
+﻿using System.Configuration;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Microsoft.Bot.Builder.Dialogs;
+using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Connector;
 
-namespace MaratonaBots_Bot
+namespace MaratonaBots_BotApp
 {
     [BotAuthentication]
     public class MessagesController : ApiController
@@ -18,7 +20,15 @@ namespace MaratonaBots_Bot
         {
             if (activity.Type == ActivityTypes.Message)
             {
-                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+                //await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
+
+                //para LUIS Bot
+                var luisAttributes = new LuisModelAttribute(
+                    ConfigurationManager.AppSettings["LuisId"],
+                    ConfigurationManager.AppSettings["LuisSubscriptionKey"]
+                    );
+                var luisService = new LuisService(luisAttributes);
+                await Conversation.SendAsync(activity, () => new Dialogs.PrevisaoTempoDialog(luisService));
             }
             else
             {

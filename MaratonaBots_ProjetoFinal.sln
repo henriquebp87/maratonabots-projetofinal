@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaratonaBots_Bot", "MaratonaBots_Bot\MaratonaBots_Bot.csproj", "{C59519A5-58EB-47B4-A367-BFAC998AEDE6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaratonaBots_BotApp", "MaratonaBots_BotApp\MaratonaBots_BotApp.csproj", "{64FD3F42-C270-42D8-ABED-C099929A477D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaratonaBots_WebApi", "MaratonaBots_WebApi\MaratonaBots_WebApi.csproj", "{65B8B2A6-36EA-432D-9DA3-FDBE8023C59B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C59519A5-58EB-47B4-A367-BFAC998AEDE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C59519A5-58EB-47B4-A367-BFAC998AEDE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C59519A5-58EB-47B4-A367-BFAC998AEDE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C59519A5-58EB-47B4-A367-BFAC998AEDE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64FD3F42-C270-42D8-ABED-C099929A477D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64FD3F42-C270-42D8-ABED-C099929A477D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64FD3F42-C270-42D8-ABED-C099929A477D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64FD3F42-C270-42D8-ABED-C099929A477D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65B8B2A6-36EA-432D-9DA3-FDBE8023C59B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65B8B2A6-36EA-432D-9DA3-FDBE8023C59B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65B8B2A6-36EA-432D-9DA3-FDBE8023C59B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65B8B2A6-36EA-432D-9DA3-FDBE8023C59B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

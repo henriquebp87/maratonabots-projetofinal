@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
-namespace MaratonaBots_Bot.Dialogs
+namespace MaratonaBots_BotApp.Dialogs
 {
     [Serializable]
     public class RootDialog : IDialog<object>
