@@ -61,11 +61,5 @@ namespace MaratonaBots_WebApi.Controllers
                     return Json(response);
             }
         }
-
-        [HttpGet("Teste")]
-        public async Task<string> Teste()
-        {
-            return "teste";
-        }
     }
 }
