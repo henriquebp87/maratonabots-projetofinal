@@ -20,8 +20,9 @@ namespace MaratonaBots_WebApi.Controllers
             _openWeatherApiOptions = openWeatherApiOptions;
         }
 
+        [Produces("application/json")]
         [HttpGet("GetCurrentWeather/{cityName}")]
-        public async Task<JsonResult> GetCurrentWeather(string cityName)
+        public async Task<IActionResult> GetCurrentWeather(string cityName)
         {
             if (string.IsNullOrEmpty(cityName))
                 return null;
@@ -34,15 +35,18 @@ namespace MaratonaBots_WebApi.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    return Json(json);
+                    return Content(json);
                 }
-                else
-                    return Json(response);
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    return NotFound();
+
+                throw new Exception(await response.Content.ReadAsStringAsync());
             }
         }
 
+        [Produces("application/json")]
         [HttpGet("GetForecast/{cityName}")]
-        public async Task<JsonResult> GetForecast(string cityName)
+        public async Task<IActionResult> GetForecast(string cityName)
         {
             if (string.IsNullOrEmpty(cityName))
                 return null;
@@ -55,10 +59,12 @@ namespace MaratonaBots_WebApi.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
-                    return Json(json);
+                    return Content(json);
                 }
-                else
-                    return Json(response);
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    return NotFound();
+
+                throw new Exception(await response.Content.ReadAsStringAsync());
             }
         }
     }
