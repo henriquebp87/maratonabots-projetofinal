@@ -44,64 +44,83 @@ namespace MaratonaBots_BotApp.Dialogs
                 var cidade = result.Entities?.FirstOrDefault(e => e.Type == "cidade");
                 if (cidade != null)
                 {
-                    string apiUrl = ConfigurationManager.AppSettings["ApiUrl"];
-                    string endpoint = $"{apiUrl}GetForecast/{cidade.Entity}";
+                    await Previsao(context, cidade.Entity);
+                }
+                else
+                {
+                    await context.PostAsync("Informe para qual cidade você deseja a previsão do tempo.");
 
-                    await context.PostAsync($"Aguarde um momento enquanto eu obtenho a previsão do tempo para {cidade.Entity}...");
+                    //context.Wait(AfterUserInput);
 
-                    using (var client = new HttpClient())
-                    {
-                        var response = await client.GetAsync(endpoint);
-                        if (!response.IsSuccessStatusCode)
-                            await context.PostAsync($"Ocorreu algum erro ao buscar sua previsão do tempo. Tente mais tarde :(");
-                        else
-                        {
-                            var json = await response.Content.ReadAsStringAsync();
-                            var resultado = JsonConvert.DeserializeObject<Models.PrevisaoTempoApiResponse2>(json);
-                            Dictionary<DateTime, Tuple<int, int, decimal>> temperaturas = new Dictionary<DateTime, Tuple<int, int, decimal>>();
-                            foreach (var item in resultado?.list)
-                            {
-                                var date = Convert.ToDateTime(item?.dt_txt, new CultureInfo("pt-BR")).Date;
-                                if (!temperaturas.ContainsKey(date))
-                                {
-                                    int min = int.MaxValue, max = int.MinValue;
-                                    decimal rain = decimal.MinValue;
-                                    temperaturas.Add(date, new Tuple<int, int, decimal>(min, max, rain));
-                                }
-                                
-                                var minTempDate = temperaturas[date].Item1;
-                                var maxTempDate = temperaturas[date].Item2;
-                                var maxRainDate = temperaturas[date].Item3;
-                                var minJson = Convert.ToInt32(item?.main?.temp_min);
-                                var maxJson = Convert.ToInt32(item?.main?.temp_max);
-                                var maxRainJson = item?.rain?._3h ?? 0;
-
-                                if (minJson < minTempDate)
-                                    minTempDate = minJson;
-
-                                if (maxJson > maxTempDate)
-                                    maxTempDate = maxJson;
-
-                                if (maxRainJson > maxRainDate)
-                                    maxRainDate = maxRainJson;
-
-                                temperaturas[date] = new Tuple<int, int, decimal>(minTempDate, maxTempDate, maxRainDate);
-                            }
-
-                            var retornoBot = temperaturas.Select(t => $@"{t.Key.ToString("dd/MM/yyyy")}({RetornaDiaSemana(t.Key.DayOfWeek)}): 
-                                                                          Mín.: {t.Value.Item1}ºC / 
-                                                                          Máx.: {t.Value.Item2}ºC /
-                                                                          Chuva: {t.Value.Item3}mm" );
-                            await context.PostAsync(string.Join("<br />", retornoBot));
-                        }
-                    }
+                    //await Previsao(context, result.Query);
                 }
             }
             catch (Exception ex)
             {
                 await context.PostAsync($"Ocorreu algum erro ao buscar sua previsão do tempo. Tente mais tarde :(");
             }
-        }        
+        }
+
+        //private async Task AfterUserInput(IDialogContext context, IAwaitable<IMessageActivity> result)
+        //{
+        //    var cidade = await result;
+        //    await MessageReceived(context, result);
+        //}
+
+        private async Task Previsao(IDialogContext context, string cidade)
+        {
+            string apiUrl = ConfigurationManager.AppSettings["ApiUrl"];
+            string endpoint = $"{apiUrl}GetForecast/{cidade}";
+
+            await context.PostAsync($"Aguarde um momento enquanto eu obtenho a previsão do tempo para {cidade}...");
+
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(endpoint);
+                if (!response.IsSuccessStatusCode)
+                    await context.PostAsync($"Ocorreu algum erro ao buscar sua previsão do tempo. Tente mais tarde :(");
+                else
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var resultado = JsonConvert.DeserializeObject<Models.PrevisaoTempoApiResponse2>(json);
+                    Dictionary<DateTime, Tuple<int, int, decimal>> temperaturas = new Dictionary<DateTime, Tuple<int, int, decimal>>();
+                    foreach (var item in resultado?.list)
+                    {
+                        var date = Convert.ToDateTime(item?.dt_txt, new CultureInfo("pt-BR")).Date;
+                        if (!temperaturas.ContainsKey(date))
+                        {
+                            int min = int.MaxValue, max = int.MinValue;
+                            decimal rain = decimal.MinValue;
+                            temperaturas.Add(date, new Tuple<int, int, decimal>(min, max, rain));
+                        }
+
+                        var minTempDate = temperaturas[date].Item1;
+                        var maxTempDate = temperaturas[date].Item2;
+                        var maxRainDate = temperaturas[date].Item3;
+                        var minJson = Convert.ToInt32(item?.main?.temp_min);
+                        var maxJson = Convert.ToInt32(item?.main?.temp_max);
+                        var maxRainJson = item?.rain?._3h ?? 0;
+
+                        if (minJson < minTempDate)
+                            minTempDate = minJson;
+
+                        if (maxJson > maxTempDate)
+                            maxTempDate = maxJson;
+
+                        if (maxRainJson > maxRainDate)
+                            maxRainDate = maxRainJson;
+
+                        temperaturas[date] = new Tuple<int, int, decimal>(minTempDate, maxTempDate, maxRainDate);
+                    }
+
+                    var retornoBot = temperaturas.Select(t => $@"{t.Key.ToString("dd/MM/yyyy")}({RetornaDiaSemana(t.Key.DayOfWeek)}): 
+                                                                          Mín.: {t.Value.Item1}ºC
+                                                                          Máx.: {t.Value.Item2}ºC
+                                                                          Chuva: {t.Value.Item3}mm");
+                    await context.PostAsync(string.Join("\n", retornoBot));
+                }
+            }
+        }
 
         [LuisIntent("clima atual")]
         public async Task ClimaAtual(IDialogContext context, LuisResult result)
