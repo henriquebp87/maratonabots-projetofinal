@@ -97,8 +97,8 @@ namespace MaratonaBots_BotApp.Dialogs
                         var minTempDate = temperaturas[date].Item1;
                         var maxTempDate = temperaturas[date].Item2;
                         var maxRainDate = temperaturas[date].Item3;
-                        var minJson = Convert.ToInt32(item?.main?.temp_min);
-                        var maxJson = Convert.ToInt32(item?.main?.temp_max);
+                        var minJson = Convert.ToInt32(item?.main?.temp_min ?? 0);
+                        var maxJson = Convert.ToInt32(item?.main?.temp_max ?? 0);
                         var maxRainJson = item?.rain?._3h ?? 0;
 
                         if (minJson < minTempDate)
@@ -116,7 +116,8 @@ namespace MaratonaBots_BotApp.Dialogs
                     var retornoBot = temperaturas.Select(t => $@"{t.Key.ToString("dd/MM/yyyy")}({RetornaDiaSemana(t.Key.DayOfWeek)}): 
                                                                           Mín.: {t.Value.Item1}ºC
                                                                           Máx.: {t.Value.Item2}ºC
-                                                                          Chuva: {t.Value.Item3}mm");
+                                                                          Chuva: {t.Value.Item3}mm
+");
                     await context.PostAsync(string.Join("\n", retornoBot));
                 }
             }
@@ -144,7 +145,8 @@ namespace MaratonaBots_BotApp.Dialogs
                         {
                             var json = await response.Content.ReadAsStringAsync();
                             var resultado = JsonConvert.DeserializeObject<Models.PrevisaoTempoApiResponse>(json);
-                            var retornoBot = $"Temperatura atual: {resultado?.main?.temp}ºC<br />Chuva: {resultado?.rain?._3h ?? 0}mm";
+                            var retornoBot = $@"Temperatura atual: {Convert.ToInt32(resultado?.main?.temp ?? 0)}ºC
+                                                Chuva: {resultado?.rain?._3h ?? 0}mm";
 
                             await context.PostAsync(retornoBot);
                         }
